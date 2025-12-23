@@ -1,0 +1,60 @@
+{% extends 'dashboard/layout.twig' %}
+
+{% block content %}
+<div class="main-content d-flex flex-column min-vh-100">
+    <div class="container mt-5">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                All Reservations
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Hotel Code</th>
+                                <th>User ID</th>
+                                <th>Hotel ID</th>
+                                <th>Hotel Name</th>
+                                <th>Room ID</th>
+                                <th>Room Number</th>
+                                <th>Staff ID</th>
+                                <th>Discount ID</th>
+                                <th>Check-in</th>
+                                <th>Check-out</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if reservations is not empty %}
+                                {% for res in reservations %}
+                                    <tr>
+                                        <td>{{ res.id|default('') }}</td>
+                                        <td>{{ res.hotel_code|default('') }}</td>
+                                        <td>{{ res.user_id|default('') }}</td>
+                                        <td>{{ res.hotel_id|default('') }}</td>
+                                        <td>{{ res.hotel_name|default('') }}</td>
+                                        <td>{{ res.room_id|default('') }}</td>
+                                        <td>{{ res.room_number|default('') }}</td>
+                                        <td>{{ res.staff_id|default('') }}</td>
+                                        <td>{{ res.discount_id|default('') }}</td>
+                                        <td>{{ res.check_in|default('') }}</td>
+                                        <td>{{ res.check_out|default('') }}</td>
+                                        <td>{{ res.status|default('') }}</td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="12" class="text-center">No reservations found.</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+                <a href="{{ base_url('user') }}" class="btn btn-secondary mt-3">Back</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

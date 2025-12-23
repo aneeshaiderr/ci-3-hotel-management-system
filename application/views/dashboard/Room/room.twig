@@ -1,0 +1,87 @@
+{% extends 'dashboard/layout.twig' %}
+
+{% block content %}
+<div class="main-content d-flex flex-column min-vh-100">
+
+  <div class="container py-5">
+    <h5 class="fw-bold mb-2 mt-7 ps-2">Room</h5>
+
+    <!-- Create Room Button -->
+    <div class="mb-2">
+      <a href="{{ base_url('room/create') }}"
+         class="btn btn-sm btn-success">
+        + Create Room
+      </a>
+    </div>
+
+    <div class="card card-custom w-100">
+      <div class="card-body">
+        <h6 class="mb-3 fw-bold">Room List</h6>
+
+        <table id="example" class="table table-striped table-bordered align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Room ID</th>
+              <th>Room Number</th>
+              <th>Floor</th>
+              <th>Room Bed</th>
+              <th>Max Guest</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% if rooms is not empty %}
+              {% for room in rooms %}
+                <tr>
+                  <td>{{ room.id }}</td>
+                  <td>{{ room.room_number }}</td>
+                  <td>{{ room.floor }}</td>
+                  <td>{{ room.beds }}</td>
+                  <td>{{ room.max_guests }}</td>
+
+                  <td>
+                    {% if room.status == 'available' %}
+                      <span class="badge bg-success">Available</span>
+                    {% elseif room.status == 'booked' %}
+                      <span class="badge bg-danger">Booked</span>
+                    {% else %}
+                      <span class="badge bg-warning text-dark">Maintenance</span>
+                    {% endif %}
+                  </td>
+
+                  <td>
+                    <a href="{{ base_url('room/editRoom?id=' ~ room.id) }}"
+                       class="btn btn-sm btn-primary me-2">
+                      View
+                    </a>
+
+                    <form method="post"
+                          action="{{ base_url('room/delete') }}"
+                          style="display:inline;"
+                          onsubmit="return confirm('Are you sure you want to delete this room?');">
+                      <input type="hidden" name="id" value="{{ room.id }}">
+                      <button type="submit" class="btn btn-sm btn-danger">
+                        Delete
+                      </button>
+                    </form>
+                  </td>
+                </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="7" class="text-center text-muted">
+                  No rooms found.
+                </td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

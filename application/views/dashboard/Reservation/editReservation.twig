@@ -1,0 +1,83 @@
+{% extends 'dashboard/layout.twig' %}
+
+{% block content %}
+<div class="main-content d-flex flex-column min-vh-100">
+    <div class="container-fluid p-0">
+        <main>
+            <div class="mx-auto max-w-4xl py-7 px-4">
+                <h5 class="fw-bold mb-4">Edit Reservation</h5>
+
+                {{ form_open('reservation/update') }}
+                <input type="hidden" name="id" value="{{ reservation.id }}">
+
+                <!-- Hotel Code -->
+                <div class="mb-3">
+                    <label for="hotel_code" class="form-label">Hotel Code</label>
+                    <input type="text" id="hotel_code" name="hotel_code"
+                        value="{{ reservation.hotel_code }}" required class="form-control">
+                </div>
+
+                <!-- Hotel Name -->
+                <div class="mb-3">
+                    <label for="hotel_id" class="form-label">Hotel Name</label>
+                    <select id="hotel_id" name="hotel_id" class="form-control" required>
+                        <option value="">Select Hotel</option>
+                        {% for hotel in hotels %}
+                            <option value="{{ hotel.id }}"
+                                {% if reservation.hotel_id == hotel.id %}selected{% endif %}>
+                                {{ hotel.hotel_name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Discount -->
+                <div class="mb-3">
+                    <label for="discount_id" class="form-label">Discount</label>
+                    <select id="discount_id" name="discount_id" class="form-control">
+                        <option value="">Select Discount</option>
+                        {% for discount in discounts %}
+                            <option value="{{ discount.id }}"
+                                {% if reservation.discount_id == discount.id %}selected{% endif %}>
+                                {{ discount.discount_name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Check-in Date -->
+                <div class="mb-3">
+                    <label for="check_in" class="form-label">Check-in</label>
+                    <input type="date" id="check_in" name="check_in"
+                        value="{{ reservation.check_in }}" required class="form-control">
+                </div>
+
+                <!-- Check-out Date -->
+                <div class="mb-3">
+                    <label for="check_out" class="form-label">Check-out</label>
+                    <input type="date" id="check_out" name="check_out"
+                        value="{{ reservation.check_out }}" required class="form-control">
+                </div>
+
+                <!-- Status -->
+                <div class="mb-3">
+                    <label for="status" class="form-label">Status</label>
+                    <select id="status" name="status" class="form-control" required>
+                        <option value="active" {% if reservation.status == 'active' %}selected{% endif %}>Active</option>
+                        <option value="completed" {% if reservation.status == 'completed' %}selected{% endif %}>Completed</option>
+                        <option value="cancelled" {% if reservation.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                    </select>
+                </div>
+
+                <!-- Buttons -->
+                <div class="mt-3 d-flex gap-2">
+                    <a href="{{ base_url('reservation') }}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-success">Update Reservation</button>
+                </div>
+
+                {{ form_close() }}
+            </div>
+        </main>
+    </div>
+</div>
+{% endblock %}

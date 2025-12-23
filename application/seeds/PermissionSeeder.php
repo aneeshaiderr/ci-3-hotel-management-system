@@ -6,9 +6,8 @@ class PermissionSeeder {
     public function run() {
         $CI =& get_instance();
 
-
         $permissions = [
-            "view_user",
+
             "create_user",
             "edit_user",
             "delete_user",
@@ -18,9 +17,26 @@ class PermissionSeeder {
         ];
 
         foreach ($permissions as $perm) {
-            $CI->db->insert('permissions', ['name' => $perm]);
+
+            $CI->db->where('name', $perm);
+            $query = $CI->db->get('permissions');
+
+            if ($query->num_rows() > 0) {
+
+                $CI->db->where('name', $perm);
+                $CI->db->update('permissions', [
+                    'updated_at' => date('Y-m-d H:i:s')
+                ]);
+                echo "Permission '{$perm}' updated successfully!";
+            } else {
+
+                $CI->db->insert('permissions', [
+                    'name'       => $perm,
+                    'created_at' => date('Y-m-d H:i:s')
+                ]);
+                echo "Permission  inserted successfully!";
+            }
         }
 
-        echo "PermissionSeeder ran successfully!";
     }
 }

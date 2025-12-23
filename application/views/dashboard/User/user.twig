@@ -1,0 +1,73 @@
+{% extends 'dashboard/layout.twig' %}
+
+{% block content %}
+<div class="main-content d-flex flex-column min-vh-100">
+  <div class="container d-flex justify-content-center align-items-center flex-column min-vh-100">
+    <div class="row w-100 justify-content-center">
+
+      <!-- User Details -->
+      <div class="col-md-5 mb-4">
+        <div class="card shadow-sm">
+          <div class="card-header bg-primary text-white text-center">Current Details</div>
+          <div class="card-body">
+            {% if user %}
+              <p><strong>ID:</strong> {{ user.id }}</p>
+              <p><strong>Email:</strong> {{ user.email }}</p>
+              <p><strong>First Name:</strong> {{ user.first_name }}</p>
+              <p><strong>Last Name:</strong> {{ user.last_name }}</p>
+              <p><strong>Address:</strong> {{ user.address }}</p>
+              <p><strong>Contact No:</strong> {{ user.contact_no }}</p>
+              <p><strong>Status:</strong> {{ user.status }}</p>
+            {% else %}
+              <p>No user details found.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Reservation Details -->
+      <div class="col-md-5 mb-4">
+        <div class="card shadow-sm">
+          <div class="card-header bg-success text-white text-center">My Reservation</div>
+          <div class="card-body">
+            {% if user and currentReservation is defined and currentReservation.user_id == user.id %}
+
+              {% set now = "now"|date("Y-m-d H:i:s") %}
+              {% set checkout = currentReservation.check_out %}
+
+              {% if checkout > now %}
+                  {% set time_left = ((checkout|date("U") - now|date("U")) / 3600)|round(0, 'floor') ~ ' hours left' %}
+              {% else %}
+                  {% set time_left = 'Checked out' %}
+              {% endif %}
+
+              <p><strong>Hotel Name:</strong> {{ currentReservation.hotel_name }}</p>
+              <p><strong>Hotel Code:</strong> {{ currentReservation.hotel_code }}</p>
+              <p><strong>Check-in:</strong> {{ currentReservation.check_in }}</p>
+              <p><strong>Check-out:</strong> {{ currentReservation.check_out }}</p>
+              <p><strong>Status:</strong> {{ currentReservation.status }}</p>
+              <p><strong>Time Left to Check-out:</strong> {{ time_left }}</p>
+
+              <div class="d-flex gap-2 mt-3">
+                <a href="{{ base_url('userAllDetails?id=' ~ user.id) }}" class="btn btn-sm btn-primary">View All</a>
+                <a href="{{ base_url('userdetails?id=' ~ user.id) }}" class="btn btn-sm btn-primary">View</a>
+                <a href="{{ base_url('user') }}" class="btn btn-sm btn-danger">Cancel</a>
+              </div>
+
+            {% else %}
+              <p>
+                {% if not user %}
+                  User not found or not logged in.
+                {% else %}
+                  No active reservations found for this user.
+                {% endif %}
+              </p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -8,9 +8,9 @@ class UserSeeder {
 
         $data = [
             'role_id'     => 1,
-            'first_name'  => 'Test',
+            'first_name'  => 'anees',
             'last_name'   => 'User',
-            'user_email'  => 'test@example.com',
+            'user_email'  => 'anees@example.com',
             'password'    => password_hash('123456', PASSWORD_DEFAULT),
             'contact_no'  => '03001234567',
             'address'     => 'Test Address',
@@ -18,10 +18,21 @@ class UserSeeder {
             'created_at'  => date('Y-m-d H:i:s')
         ];
 
-        $CI->db->insert('users', $data);
+        $CI->db->where('user_email', $data['user_email']);
+        $query = $CI->db->get('users');
 
-        echo "UserSeeder ran successfully!";
+        if ($query->num_rows() > 0) {
+
+            $CI->db->where('user_email', $data['user_email']);
+
+            $update_data = $data;
+            unset($update_data['created_at']);
+            $CI->db->update('users', $update_data);
+            echo "User updated successfully!";
+        } else {
+
+            $CI->db->insert('users', $data);
+            echo "User inserted successfully!";
+        }
     }
 }
-
-

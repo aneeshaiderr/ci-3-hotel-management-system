@@ -42,7 +42,7 @@ class Migration_Create_services_table extends CI_Migration {
             )
         ));
 
-       
+
         $this->dbforge->add_key('id', TRUE);
 
 
@@ -52,6 +52,7 @@ class Migration_Create_services_table extends CI_Migration {
     }
 
     public function down() {
+
         $this->dbforge->drop_table('services');
     }
 }

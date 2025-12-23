@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% include 'dashboard/partial/head.twig' %}
+</head>
+<body>
+
+{% include 'dashboard/partial/nav.twig' %}
+
+<div class="d-flex">
+    {% include 'dashboard/partial/sidebar.twig' %}
+
+    <main class="flex-grow-1 p-4">
+        {% block content %}{% endblock %}
+    </main>
+</div>
+
+{% include 'dashboard/partial/footer.twig' %}
+</body>
+</html>

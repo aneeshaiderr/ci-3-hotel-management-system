@@ -1,33 +1,65 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Signup extends CI_Controller {
-
-    public function __construct() {
+class Signup extends CI_Controller
+{
+    public function __construct()
+    {
         parent::__construct();
-        $this->load->library('form_validation');
-
+        $this->load->model('userModel');
+        $this->load->library('session');
+        $this->load->helper(['url', 'form']);
     }
 
-    public function index() {
+    public function index()
+    {
+        if ($this->input->method() === 'post') {
 
-        $this->form_validation->set_rules('first_name', 'First Name', 'required|trim');
+            $first_name = trim($this->input->post('first_name'));
 
-        $this->form_validation->set_rules('last_name', 'Last Name', 'required|trim');
+            $last_name  = trim($this->input->post('last_name'));
 
-        $this->form_validation->set_rules('user_email', 'Email', 'required|trim|valid_email');
+            $email      = trim($this->input->post('email'));
 
-        $this->form_validation->set_rules('contact_no', 'Contact', 'required|trim');
+            $password   = $this->input->post('password');
 
-        $this->form_validation->set_rules('password', 'Password', 'required|trim');
+            if ($first_name === '' || $last_name === '' || $email === '' || $password === '') {
 
-        if ($this->form_validation->run() == FALSE) {
+                $this->session->set_flashdata('error', 'All required fields must be filled.');
 
-            $this->load->view('auth/signup');
-        } else {
+                redirect('signup');
 
-            $this->session->set_flashdata('succMsg', 'Signup successful!');
+                exit;
+            }
+
+            $userData = [
+                'first_name' => $first_name,
+                'last_name'  => $last_name,
+                'email'      => $email,
+                'contact_no' => $this->input->post('contact_no') ?: '',
+                'password'   => password_hash($password, PASSWORD_BCRYPT),
+                'role_id'    => 3,
+                'active'     => 1,
+                'created_at' => date('Y-m-d H:i:s')
+            ];
+
+
+            $inserted = $this->userModel->signup($userData, 3);
+
+            if ($inserted) {
+
+                $this->session->set_flashdata('success', 'Signup successful! You can now login.');
+
+                redirect('login');
+                exit;
+            }
+
+            $this->session->set_flashdata('error', 'Signup failed!');
             redirect('signup');
+            exit;
         }
+
+        $this->load->view('auth/signup');
     }
 }
+

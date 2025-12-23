@@ -1,0 +1,77 @@
+{% extends 'dashboard/layout.twig' %}
+
+{% block content %}
+<div class="main-content d-flex flex-column min-vh-100">
+  <div class="container py-5">
+    <h5 class="fw-bold mb-2 ps-2">Service</h5>
+
+    <!-- Create Service Button -->
+    <div class="mb-4">
+      <a href="{{ base_url('services/create') }}" class="btn btn-sm btn-success">
+        + Create Services
+      </a>
+    </div>
+
+    <div class="card card-custom w-100">
+      <div class="card-body">
+        <h6 class="mb-3 fw-bold">Service List</h6>
+
+        <table id="example" class="table table-striped table-bordered align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Service ID</th>
+              <th>Service Name</th>
+              <th>Price</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% if services is not empty %}
+              {% for service in services %}
+                <tr>
+                  <td>{{ service.id }}</td>
+                  <td>{{ service.service_name }}</td>
+                  <td>${{ service.price }}</td>
+                  <td>
+                    {% set st = service.status|lower %}
+                    {% if st == 'active' %}
+                      <span class="badge bg-success">Active</span>
+                    {% elseif st == 'inactive' %}
+                      <span class="badge bg-danger">Inactive</span>
+                    {% else %}
+                      <span class="badge bg-warning text-dark">{{ service.status }}</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center gap-2">
+                      <a href="{{ base_url('services/edit?id=' ~ service.id) }}"
+                         class="btn btn-sm btn-primary py-1 px-3">
+                         View
+                      </a>
+                      <form action="{{ base_url('services/delete') }}" method="POST"
+                            onsubmit="return confirm('Are you sure you want to delete this service?');"
+                            class="m-0">
+                        <input type="hidden" name="id" value="{{ service.id }}">
+                        <button type="submit" class="btn btn-sm btn-danger py-1 px-3">
+                          Delete
+                        </button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="5" class="text-center text-muted">No services found</td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

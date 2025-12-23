@@ -43,12 +43,12 @@
                 <div class="mb-3">
                     <input
                         type="email"
-                        name="user_email"
+                        name="email"
                         class="form-control"
                         placeholder="Enter your email"
-                        value="<?= set_value('user_email'); ?>"
+                        value="<?= set_value('email'); ?>"
                     >
-                    <?= form_error('user_email', '<div class="text-danger small mt-1">', '</div>'); ?>
+                    <?= form_error('email', '<div class="text-danger small mt-1">', '</div>'); ?>
                 </div>
 
                 <!-- Contact -->
