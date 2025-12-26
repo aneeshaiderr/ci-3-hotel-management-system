@@ -51,28 +51,24 @@
                                     </td>
                                     <td>
 
-                                      <div class="d-flex align-items-center gap-2">
-                                   <a href="{{ base_url('discount/edit/' ~ discount.id) }}"
-                              class="btn btn-sm btn-primary py-1 px-3">
-                                     View
-                                       </a>
+                                   <div class="d-flex align-items-center gap-2">
+                                        <a href="{{ base_url('discount/edit/' ~ discount.id) }}" class="btn btn-sm btn-primary py-1 px-3">View</a>
 
-                                        </div>
+                                        {% set permissions = [] %}
+                                        {% if session.permissions is defined %}
+                                            {% for p in session.permissions %}
+                                                {% set permissions = permissions|merge([p.name]) %}
+                                            {% endfor %}
+                                        {% endif %}
 
-                                            {% set permissions = [] %}
-                                            {% if session.permissions is defined %}
-                                                {% for p in session.permissions %}
-                                                    {% set permissions = permissions|merge([p.name]) %}
-                                                {% endfor %}
-                                            {% endif %}
+                                        {% if session.user.role_name == '' or ('delete_discount' in permissions and session.user.role_name != 'staff') %}
+                                            <form action="{{ base_url('discount/delete') }}" method="POST" class="m-0">
+                                                <input type="hidden" name="id" value="{{ discount.id }}">
+                                                <button type="submit" class="btn btn-sm btn-danger py-1 px-3">Delete</button>
+                                            </form>
+                                        {% endif %}
+                                    </div>
 
-                                            {% if session.user.role_name == 'superadmin' or 'delete_discount' in permissions %}
-                                                <form action="{{ base_url('discount/delete') }}" class="m-0">
-                                                    <input type="hidden" name="id" value="{{ discount.id }}">
-                                                    <button type="submit" class="btn btn-sm btn-danger py-1 px-3">Delete</button>
-                                                </form>
-                                            {% endif %}
-                                        </div>
                                     </td>
                                 </tr>
                             {% endfor %}

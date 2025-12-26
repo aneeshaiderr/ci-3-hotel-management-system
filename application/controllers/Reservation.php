@@ -13,6 +13,8 @@ class Reservation extends MY_Controller
         $this->load->model('discountModel');
         $this->load->library('session');
         $this->load->library('twig');
+        $this->load->library('ReservationRequest');
+        $this->load->library('UpdateReservationRequest');
     }
 
     // Show all reservations
@@ -33,6 +35,7 @@ class Reservation extends MY_Controller
     public function create()
     {
 
+
         $users = $this->userModel->getAllUsers();
 
         $hotels = $this->hotelModel->getAllHotels();
@@ -50,32 +53,48 @@ class Reservation extends MY_Controller
     }
 
     // Store reservation
-    public function store()
-    {
-        if ($this->input->server('REQUEST_METHOD') === 'POST') {
-
-            $data = $this->input->post();
-
-
-
-            $this->reservationModel->create($data);
-
-            $this->session->set_flashdata('success', 'Reservation created successfully!');
-            redirect('reservation');
-        }
+   public function store()
+{
+    if ($this->input->method() !== 'post') {
+        redirect('reservation/create');
+        return;
     }
 
-    // Delete reservation by hotel code
+    if (!$this->reservationrequest->validate()) {
+
+        $this->session->set_flashdata(
+            'errors',
+            $this->reservationrequest->errors()
+        );
+
+        $this->session->set_flashdata(
+            'old',
+            $this->reservationrequest->all()
+        );
+
+        redirect('reservation/create');
+        return;
+    }
+    $data = $this->reservationrequest->all();
+    $this->reservationModel->create($data);
+
+    $this->session->set_flashdata('success', 'Reservation created successfully!');
+    redirect('reservation');
+}
+
+
+
     public function delete()
-    {
-        $hotelCode = $this->input->post('hotel_code');
+{
+    $hotelCode = $this->input->post('hotel_code');
 
-        if ($hotelCode) {
-
-            $this->reservationModel->deleteByHotelCode($hotelCode);
-        }
-        redirect('reservation');
+    if ($hotelCode) {
+        $this->reservationModel->softDeleteByHotelCode($hotelCode);
     }
+
+    redirect('reservation');
+}
+
 
     // Show reservation detail
     public function show()
@@ -112,20 +131,39 @@ class Reservation extends MY_Controller
     }
 
     // Update reservation
-    public function update()
-    {
-        if ($this->input->server('REQUEST_METHOD') === 'POST') {
+   public function update()
+{
+    if ($this->input->server('REQUEST_METHOD') === 'POST') {
 
-            $id = $this->input->post('id');
+        //  VALIDATION FAIL
+        if (!$this->updatereservationrequest->validate()) {
 
-            if (!$id) redirect('reservation');
+            $this->session->set_flashdata(
+                'errors',
+                $this->updatereservationrequest->errors()
+            );
 
-            $data = $this->input->post();
+            $this->session->set_flashdata(
+                'old',
+                $this->updatereservationrequest->all()
+            );
 
-            $this->reservationModel->update($id, $data);
-
-            $this->session->set_flashdata('success', 'Reservation updated successfully!');
-            redirect('reservation');
+            redirect('reservation/editReservation?id=' . $this->input->post('id'));
+            return;
         }
+
+        //VALIDATION
+        $id = $this->input->post('id');
+        if (!$id) redirect('reservation');
+
+        $data = $this->input->post();
+        unset($data['id']);
+
+        $this->reservationModel->update($id, $data);
+
+        $this->session->set_flashdata('success', 'Reservation updated successfully!');
+        redirect('reservation');
     }
+}
+
 }

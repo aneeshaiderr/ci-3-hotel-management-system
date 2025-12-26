@@ -1,0 +1,64 @@
+{% extends 'dashboard/layout.twig' %}
+
+{% block content %}
+	<div class="main-content d-flex flex-column min-vh-100">
+		<div class="container py-5">
+
+			<div class="mb-5">
+				<h3 class="fw-bold mb-3">All Permissions</h3>
+
+				<table class="table table-bordered w-100">
+					<thead style="background-color:#f3f4f6;">
+						<tr>
+							<th style="width:70%">Permission Name</th>
+							<th style="width:30%">Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% if permissions is not empty %}
+							{% for perm in permissions %}
+								<tr>
+									<td>{{ perm.name }}</td>
+									<td>
+										<form method="POST" action="{{ base_url('permission/deletePermission') }}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this permission?');">
+											<input type="hidden" name="name" value="{{ perm.name }}">
+											<button type="submit" style="background-color:#dc2626; color:white; border:none; padding:6px 12px; border-radius:4px;" onmouseover="this.style.backgroundColor='#b91c1c'" onmouseout="this.style.backgroundColor='#dc2626'">
+												Delete
+											</button>
+										</form>
+									</td>
+								</tr>
+							{% endfor %}
+						{% else %}
+							<tr>
+								<td colspan="2" class="text-center text-muted">No permissions found.</td>
+							</tr>
+						{% endif %}
+					</tbody>
+				</table>
+			</div>
+
+			<div class="container py-5">
+				<h4>Edit Role:
+					{{ role.name|default('N/A') }}</h4>
+
+				<form action="{{ base_url('permission/update') }}" method="POST">
+					<input type="hidden" name="role_id" value="{{ role.id|default('') }}">
+
+					<div class="mb-3">
+						<label class="form-label">Role Name</label>
+						<input type="text" name="role_name" class="form-control" value="{{ role.name|default('') }}" placeholder="Enter role name">
+					</div>
+
+					<div class="mb-3">
+						<label class="form-label">Permissions (comma separated)</label>
+						<input type="text" name="permissions" class="form-control" value="{{ assignedPermissions|join(', ') }}" placeholder="e.g. view_discount, delete_discount">
+					</div>
+
+					<button type="submit" class="btn btn-primary">Update Role & Permissions</button>
+				</form>
+			</div>
+
+		</div>
+	</div>
+{% endblock %}

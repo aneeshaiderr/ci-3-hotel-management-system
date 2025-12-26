@@ -23,11 +23,11 @@
 		{% set pagesList = [] %}
 
 		{% if roleId == 1 %}
-			{% set pagesList = ['dashboard','analytics','setting','user','hotel','rooms','services','discount','reservation','payment','permission'] %}
+			{% set pagesList = ['analytics','setting','user','hotel','rooms','services','discount','reservation','payment','permission'] %}
 		{% elseif roleId == 2 %}
 			{% set pagesList = ['user','reservation','services','rooms','discount'] %}
 		{% elseif roleId == 3 %}
-			{% set pagesList = ['dashboard','user','reservation'] %}
+			{% set pagesList = ['user','reservation'] %}
 		{% else %}
 			{% set pagesList = ['dashboard'] %}
 		{% endif %}

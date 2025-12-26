@@ -13,7 +13,7 @@
           </div>
         <?php endif; ?>
 
-        <?php echo form_open("auth/login");?>
+        <?php echo form_open("auth/login"); ?>
 
           <div class="mb-3">
             <label for="identity" class="form-label"><?php echo lang('login_identity_label', 'identity');?></label>
@@ -22,7 +22,7 @@
 
           <div class="mb-3">
             <label for="password" class="form-label"><?php echo lang('login_password_label', 'password');?></label>
-            <?php echo form_input($password, '', 'class="form-control" id="password" placeholder="Enter password"'); ?>
+            <?php echo form_password($password, '', 'class="form-control" id="password" placeholder="Enter password"'); ?>
           </div>
 
           <div class="form-check mb-3">
@@ -34,12 +34,18 @@
             <?php echo form_submit('submit', lang('login_submit_btn'), 'class="btn btn-primary fw-bold"'); ?>
           </div>
 
-        <?php echo form_close();?>
+        <?php echo form_close(); ?>
 
-        <div class="mt-3 text-center">
-          <a href="forgot_password"><?php echo lang('login_forgot_password');?></a>
-        </div>
+
+      <!-- Signup footer added -->
+      <div class="card-footer text-center bg-light py-3">
+        <p class="mb-0">
+          Don't have an account?
+          <a href="<?php echo base_url('signup'); ?>" class="text-primary fw-semibold">Signup now</a>
+        </p>
       </div>
+      <!-- End Signup footer -->
+
     </div>
   </div>
 </div>

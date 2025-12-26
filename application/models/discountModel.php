@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class DiscountModel extends CI_Model
 {
-public function getAll()
+    public function getAll()
 {
 
     $this->db->select('id, discount_type, discount_name, value, start_date, end_date, status');
@@ -39,7 +39,7 @@ public function getAll()
 
     return $this->db->insert('discount', $insertData);
 }
- public function find($id)
+    public function find($id)
     {
         $this->db->select('id, discount_type, discount_name, value, start_date, end_date, status');
 

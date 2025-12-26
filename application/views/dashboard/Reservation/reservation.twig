@@ -36,7 +36,7 @@
                         {% for res in reservations %}
                             <tr>
                                 <td>{{ res.hotel_code }}</td>
-                                <td>{{ res.user_email }}</td>
+                                <td>{{ res.email }}</td>
                                 <td>{{ res.hotel_name }}</td>
                                 <td>{{ res.room_id }}</td>
                                 <td>{{ res.discount_name }}</td>
@@ -47,10 +47,11 @@
                                  <div class="d-flex align-items-center gap-1">
                                    <a href="{{ base_url('reservation/editReservation') }}?id={{ res.id }}" class="btn btn-sm btn-primary">View
                                     </a>
-                                    <form action="/reservation/delete"  style="display:inline-block;">
-                                        <input type="hidden" name="hotel_code" value="{{ res.hotel_code }}">
-                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
-                                    </form>
+                                   <form action="{{ base_url('reservation/delete') }}" method="POST" style="display:inline-block;">
+    <input type="hidden" name="hotel_code" value="{{ res.hotel_code }}">
+    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+</form>
+
                                 </td>
                             </tr>
                         {% endfor %}

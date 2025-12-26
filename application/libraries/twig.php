@@ -43,7 +43,7 @@ class Twig
     }
            public function render($view, $data = [])
         {
-         // Returns rendered template as string
+         
 
          return $this->twig->render($view . '.twig', $data);
 }

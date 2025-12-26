@@ -14,7 +14,7 @@ class RoomModel extends CI_Model
     return $query->result_array();
 }
 
-public function getAll()
+    public function getAll()
 {
     $query = $this->db->get('rooms');
     return $query->result_array();

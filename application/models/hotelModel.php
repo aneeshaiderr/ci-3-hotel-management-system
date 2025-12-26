@@ -3,6 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class HotelModel extends CI_Model
 {
+    protected $table = 'hotels';
     public function getAllHotels()
     {
         return $this->db
@@ -37,5 +38,16 @@ class HotelModel extends CI_Model
             ->update('hotels', $data);
     }
 
+public function softDelete($id)
+{
+    if (!$id) return false;
+
+    $data = [
+        'deleted_at' => date('Y-m-d H:i:s')
+    ];
+
+    $this->db->where('id', $id);
+    return $this->db->update('hotels', $data);
+}
 
 }

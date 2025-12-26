@@ -2,10 +2,10 @@
 
 /**
  * Class Auth
- * @property Ion_auth|Ion_auth_model $ion_auth        The ION Auth spark
- * @property CI_Form_validation      $form_validation The form validation library
+ * @property Ion_auth|Ion_auth_model $ion_auth
+ * @property CI_Form_validation      $form_validation
  */
-class Auth extends CI_Controller
+class Auth extends MY_Controller
 {
 	public $data = [];
 
@@ -80,7 +80,20 @@ class Auth extends CI_Controller
 
 			if ($this->ion_auth->login($this->input->post('identity'), $this->input->post('password'), $remember))
 			{
+         $user  = $this->ion_auth->user()->row();
+          $group = $this->ion_auth->get_users_groups($user->id)->row();
 
+    // null-safe check
+    $role_id   = $group ? (int)$group->id : 0;
+    $role_name = $group ? $group->name : '';
+
+    $this->session->set_userdata([
+        'user_id'   => $user->id,
+        'role_id'   => $role_id,
+        'role_name' => $role_name,
+        'name'      => $user->first_name . ' ' . $user->last_name,
+        'logged_in' => TRUE
+    ]);
 				//if the login is successful
 				//redirect them back to the home page
 				$this->session->set_flashdata('message', $this->ion_auth->messages());
@@ -91,7 +104,8 @@ class Auth extends CI_Controller
 				// if the login was un-successful
 				// redirect them back to the login page
 				$this->session->set_flashdata('message', $this->ion_auth->errors());
-				redirect('auth/login', 'refresh'); // use redirects instead of loading views for compatibility with MY_Controller libraries
+				redirect('auth/login', 'refresh');
+				 // use redirects instead of loading views for compatibility with MY_Controller libraries
 			}
 		}
 		else

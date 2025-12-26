@@ -27,23 +27,29 @@ class ReservationModel extends CI_Model
         return $query->result_array();
     }
 
-    // Soft delete by hotel code
-       public function deleteByHotelCode($hotelCode)
-    {
-        $this->db->set('deleted_at', 'NOW()', false);
-        $this->db->where('hotel_code', $hotelCode);
-        return $this->db->update('reservations');
-    }
+
+    public function softDeleteByHotelCode($hotelCode)
+{
+    if (!$hotelCode) return false; // safeguard
+
+    $data = [
+        'deleted_at' => date('Y-m-d H:i:s')
+    ];
+
+    $this->db->where('hotel_code', $hotelCode);
+    return $this->db->update('reservations', $data); // table name directly
+}
+
 
     // Create new reservation
-       public function create($data)
+    public function create($data)
     {
         $data['created_at'] = date('Y-m-d H:i:s');
         return $this->db->insert('reservations', $data);
     }
 
     // Get all rooms
-       public function getAllRooms()
+    public function getAllRooms()
     {
         $query = $this->db->select('id')
           ->from('rooms')
@@ -53,7 +59,7 @@ class ReservationModel extends CI_Model
     }
 
     // Get user email by ID
-        public function getUserEmailById($userId)
+    public function getUserEmailById($userId)
     {
         $query = $this->db->select('email')
          ->from('users')
@@ -64,7 +70,7 @@ class ReservationModel extends CI_Model
     }
 
     // Get hotel name by ID
-        public function getHotelNameById($hotelId)
+    public function getHotelNameById($hotelId)
     {
         $query = $this->db->select('hotel_name')
         ->from('hotels')
@@ -75,7 +81,7 @@ class ReservationModel extends CI_Model
     }
 
     // Get reservation by ID
-       public function getReservationById($id)
+    public function getReservationById($id)
     {
         $this->db->select('r.*, u.email, h.hotel_name, d.discount_name');
         $this->db->from('reservations r');
@@ -89,7 +95,7 @@ class ReservationModel extends CI_Model
     }
 
     // Update reservation
-        public function update($id, $data)
+    public function update($id, $data)
     {
         $data['updated_at'] = date('Y-m-d H:i:s');
         $this->db->where('id', $id);
@@ -97,7 +103,7 @@ class ReservationModel extends CI_Model
     }
 
     // Get discount name by ID
-        public function getDiscountNameById($discountId)
+    public function getDiscountNameById($discountId)
     {
         $query = $this->db->select('name')
         ->from('discount')

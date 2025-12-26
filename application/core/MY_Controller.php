@@ -19,6 +19,7 @@ class MY_Controller extends CI_Controller
             'role_name' => $this->session->userdata('role_name'),
             'name'      => $this->session->userdata('name'),
             'logged_in' => $this->session->userdata('logged_in'),
+            'permissions' => $this->session->userdata('permissions'),
         ];
     }
 
@@ -26,8 +27,8 @@ class MY_Controller extends CI_Controller
     {
         $data = array_merge($this->twigData, $data);
 
-
         echo $this->twig->render($view, $data);
         exit;
     }
+
 }

@@ -1,4 +1,3 @@
-
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
@@ -43,7 +42,10 @@ class Dashboard extends MY_Controller
 
         if ($roleId === 2) {
 
+
             $users = $this->userModel->getAllUsers();
+
+
 
             $this->render('dashboard/Staff/staff', [
                 'users'   => $users,
@@ -191,6 +193,24 @@ class Dashboard extends MY_Controller
         redirect('dashboard');
     }
 
+   public function softDelete()
+    {
+        $id = $this->input->post('id');
 
+        if (!$id) {
+            $this->session->set_flashdata('error', 'User ID missing!');
+            redirect('user');
+            return;
+        }
 
+        $deleted = $this->userModel->softDelete($id);
+
+        if ($deleted) {
+            $this->session->set_flashdata('success', 'User deleted successfully!');
+        } else {
+            $this->session->set_flashdata('error', 'Failed to delete user.');
+        }
+
+        redirect('user');
+    }
 }

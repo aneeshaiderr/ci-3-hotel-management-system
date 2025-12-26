@@ -1,0 +1,30 @@
+{% extends 'dashboard/layout.twig' %}
+{% block content %}
+	<div class="main-content d-flex flex-column min-vh-100">
+		<div class="container py-5">
+
+			<h2>Assign Permissions to Role</h2>
+<form action="{{ base_url('permission/assignPermissionStore') }}" method="POST">
+    <div class="mb-3">
+        <label class="form-label">Select Role</label>
+        <select name="role_id" class="form-control" required>
+            <option value="">-- Select Role --</option>
+            {% for role in roles %}
+                <option value="{{ role.id }}">{{ role.name|capitalize }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Enter Permissions</label>
+        <input type="text" name="permissions" class="form-control" placeholder="e.g. view_discount, delete_discount, create_user" required>
+        <small class="text-muted">Comma separated list of permissions</small>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Assign Permissions</button>
+</form>
+
+
+		</div>
+	</div>
+{% endblock %}

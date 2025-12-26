@@ -20,8 +20,8 @@ class Hotel extends MY_Controller
 
        $this->render('dashboard/Hotel/hotel', $data);
     }
-  public function create()
-{
+     public function create()
+  {
 
     if ($this->input->method() === 'post') {
 
@@ -52,31 +52,25 @@ class Hotel extends MY_Controller
                 'address'    => $this->input->post('address', true),
                 'contact_no' => $this->input->post('contact_no', true),
             ];
-
-
             $this->HotelModel->update($id, $data);
 
+            return redirect('hotel');
 
-            redirect('hotel');
-            return;
         }
 
-
         $id = $this->input->get('id', true);
-
         $hotel = $this->HotelModel->find($id);
 
         if (!$hotel) {
             $this->session->set_flashdata('error', 'Hotel not found.');
-            redirect('hotel');
-            return;
+            return redirect('hotel');
         }
 
          $this->render('dashboard/Hotel/edithotel', ['hotel' => $hotel]);
     }
 
 
-    public function update()
+         public function update()
     {
         if ($this->input->post()) {
             $id = $this->input->post('id', true);
@@ -88,6 +82,27 @@ class Hotel extends MY_Controller
             $this->HotelModel->update($id, $data);
             redirect('hotel');
         }
+    }
+          public function delete($id = null)
+    {
+
+        if (!$id && $this->input->post('id')) {
+            $id = (int) $this->input->post('id');
+        }
+
+        if (!$id) {
+            $this->session->set_flashdata('error', 'Hotel ID missing!');
+            redirect('hotel');
+            return;
+        }
+
+        if ($this->HotelModel->softDelete($id)) {
+            $this->session->set_flashdata('success', 'Hotel deleted successfully.');
+        } else {
+            $this->session->set_flashdata('error', 'Failed to delete hotel.');
+        }
+
+        redirect('hotel');
     }
 
 }

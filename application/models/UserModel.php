@@ -29,16 +29,14 @@ class UserModel extends CI_Model
     {
         return $this->findUserById($id);
     }
-
-public function getAllUsers()
+   public function getAllUsers()
 {
-    return $this->db
-        ->select('id, first_name, last_name, email, contact_no')
-        ->from('users')
-        ->get()
-        ->result_array();
-}
 
+    return $this->db
+                ->where('deleted_at IS NULL', null, false)
+                ->get($this->table)
+                ->result_array();
+}
 
 
 
@@ -78,24 +76,6 @@ public function getAllUsers()
             ->update($this->table, $data);
     }
 
-
-
-    public function softDelete($id)
-    {
-        return $this->db
-            ->where('id', $id)
-            ->update($this->table, ['deleted_at' => date('Y-m-d H:i:s')]);
-    }
-
-    public function delete($id)
-    {
-        return $this->db
-            ->where('id', $id)
-            ->delete('reservations');
-    }
-
-
-
     public function findByEmail($email)
     {
         return $this->db
@@ -120,36 +100,53 @@ public function getAllUsers()
     public function signup($data, $group_id = 3)
 {
 
+    if ($this->emailExists($data['email'])) {
+        return false;
+    }
+
+
     $this->db->insert($this->table, $data);
     $user_id = $this->db->insert_id();
 
+    if (!$user_id) {
+        return false;
+    }
+
+
     $this->db->insert('users_groups', [
-        'user_id' => $user_id,
+        'user_id'  => $user_id,
         'group_id' => $group_id
     ]);
 
     return $user_id;
 }
-public function emailExists($email)
-{
-    return $this->db
-        ->where('email', $email)
-        ->get('users')
-        ->num_rows() > 0;
-}
 
-public function usernameExists($username)
-{
-    return $this->db
-        ->where('username', $username)
-        ->get('users')
-        ->num_rows() > 0;
-}
-    public function staffsignup($data)
+
+    /**
+     * Check email exists
+     */
+    public function emailExists($email)
     {
-        return $this->db->insert($this->table, $data);
+        return $this->db
+            ->where('email', $email)
+            ->limit(1)
+            ->get($this->table)
+            ->num_rows() > 0;
     }
 
+
+    public function usernameExists($username)
+    {
+        return $this->db
+            ->where('username', $username)
+            ->limit(1)
+            ->get($this->table)
+            ->num_rows() > 0;
+    }
+
+    /**
+     * Password verify
+     */
     public function verifyPassword($user, $password)
     {
         return password_verify($password, $user['password']);
@@ -204,4 +201,17 @@ public function usernameExists($username)
 
         return isset($row['role_id']) ? $row['role_id'] : null;
     }
+
+    public function softDelete($id)
+{
+    $data = [
+        'deleted_at' => date('Y-m-d H:i:s')
+    ];
+
+    $this->db->where('id', $id);
+    $this->db->update('users', $data);
+}
+
+
+
 }
